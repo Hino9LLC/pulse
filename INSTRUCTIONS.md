@@ -64,5 +64,21 @@ d.    [Extreme – data manipulation with reasoning] – Give me the best repres
   - "Create a scatter plot of founded year and valuation"
   - "Show me which investors appear most frequently"
   - "What's the correlation between ARR and Valuation?"
+# Phase 4 - Final Cleanup & Polish
+- Remove all items endpoints, frontend logic, database schema, fastapi models and schemas
+- Remove unused authentication/user related code and middleware
+- Clean up unused imports and dependencies related to removed features
+- Fix the "Per Page" feature in the react table
+- Move G2 rating column after founded date
+- Add proper error handling and logging for LLM service requests
+- Add request validation and basic rate limiting for visualization endpoint
+- Update API documentation to reflect only active endpoints
+- Clean up unused utility functions and middleware
+- Remove audit logs table and related code (not needed for this scope)
+- Add loading states and better error messages in frontend
+- Optimize database queries and add proper indexing
+- Add basic usage analytics for generated visualizations
+- Ensure all visualization types render properly with edge cases
+- Add export functionality for generated visualizations (optional enhancement)
   
 

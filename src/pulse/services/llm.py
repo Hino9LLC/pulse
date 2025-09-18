@@ -69,7 +69,8 @@ class LLMService:
     async def _get_llm_response(self, user_prompt: str) -> dict[str, Any]:
         """Get structured response from LLM"""
         system_prompt = f"""
-You are a data visualization expert. Given a user's natural language request, generate:
+        You are a data visualization expert. 
+        Given a user's natural language request, generate:
 1. A SQL query for the companies database
 2. The appropriate visualization type
 3. A title for the visualization
@@ -100,7 +101,7 @@ Example responses:
   "title": "Founded Year vs Valuation",
   "chart_config": {{"x_field": "founded_year", "y_field": "valuation_usd"}}
 }}
-"""
+"""  # noqa: S608
 
         message = self.client.messages.create(
             model="claude-3-5-sonnet-20241022",

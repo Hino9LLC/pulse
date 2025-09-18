@@ -1,1 +1,1 @@
-"""Pydantic schemas for Pulse API"""
+"""Pydantic schemas for Pulse Companies API"""
