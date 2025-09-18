@@ -21,7 +21,9 @@
       "Bash(npm run lint:*)",
       "Bash(sqlite3:*)",
       "Bash(uv add:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(timeout 30 curl -s -X POST \"http://localhost:8200/api/visualizations/generate\" -H \"Content-Type: application/json\" -d '{\"\"\"\"prompt\"\"\"\": \"\"\"\"Create a pie chart representing industry breakdown\"\"\"\"}')",
+      "Bash(timeout 30 curl -s -X POST \"http://localhost:8200/api/visualizations/generate\" -H \"Content-Type: application/json\" -d '{\"\"prompt\"\": \"\"Create a pie chart representing industry breakdown\"\"}')"
     ],
     "deny": [],
     "ask": []

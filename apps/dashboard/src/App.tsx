@@ -86,11 +86,12 @@ function App() {
   const handlePromptSubmit = async (prompt: string) => {
     try {
       setIsGenerating(true);
+      setVisualizations([]); // Clear previous visualizations
       const result = await visualizationsAPI.generateVisualization(prompt);
-      setVisualizations(prev => [...prev, { id: Date.now(), prompt, ...result }]);
+      setVisualizations([{ id: Date.now(), prompt, ...result }]);
     } catch (error) {
       console.error("Failed to generate visualization:", error);
-      setVisualizations(prev => [...prev, {
+      setVisualizations([{
         id: Date.now(),
         prompt,
         success: false,

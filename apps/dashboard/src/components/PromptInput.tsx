@@ -28,8 +28,8 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSubmit, loading = false }) 
   const examplePrompts = [
     "Create a pie chart representing industry breakdown",
     "Create a scatter plot of founded year and valuation",
-    "Show me which investors appear most frequently",
-    "What's the correlation between ARR and Valuation?",
+    "Create a bar chart to see which investors appear most frequently",
+    "Give me the best representation of data if I want to understand the correlation of ARR and Valuation",
     "Show companies with highest valuations",
     "Create a bar chart of average funding by industry"
   ];
