@@ -14,7 +14,9 @@ help:
 	@echo ""
 	@echo "Database:"
 	@echo "  db-migrate   - Run database migrations"
+	@echo "  db-rebuild   - Rebuild database from scratch with guided setup"
 	@echo "  db-reset     - Reset database (DESTRUCTIVE)"
+	@echo "  db-load-data - Load companies data from CSV"
 	@echo ""
 	@echo "Code Quality:"
 	@echo "  test         - Run all tests (Python + React)"
@@ -82,13 +84,21 @@ db-migrate:
 	@echo "🗄️  Running database migrations..."
 	uv run alembic upgrade head
 
+db-rebuild:
+	@echo "🔨 Rebuilding database from scratch..."
+	uv run python scripts/rebuild_database.py
+
 db-reset:
 	@echo "⚠️  DESTRUCTIVE: Resetting database..."
 	@read -p "Are you sure? This will delete all data [y/N]: " confirm && [ "$$confirm" = "y" ]
 	rm -f pulse.db
 	$(MAKE) db-migrate
 	@echo "📊 Loading companies data..."
-	uv run python load_companies_data.py
+	uv run python scripts/load_companies_data.py
+
+db-load-data:
+	@echo "📊 Loading companies data..."
+	uv run python scripts/load_companies_data.py
 
 # Testing
 test:

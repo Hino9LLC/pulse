@@ -9,6 +9,7 @@ from datetime import datetime
 from sqlalchemy import BigInteger, DateTime, Float, Integer, String, Text
 from sqlalchemy.dialects.sqlite import INTEGER
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.types import JSON
 from sqlalchemy.sql import func
 
 
@@ -44,9 +45,9 @@ class Company(Base):
     # Employee count (normalized to integer)
     employee_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
-    # Text fields
-    top_investors: Mapped[str] = mapped_column(Text, nullable=False)
-    product: Mapped[str] = mapped_column(Text, nullable=False)
+    # JSON fields - arrays of strings
+    top_investors: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    product: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     g2_rating: Mapped[float] = mapped_column(Float, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(

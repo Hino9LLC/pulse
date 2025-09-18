@@ -9,23 +9,28 @@ import sys
 from pathlib import Path
 
 
-# Add src to path to import pulse modules
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+# Add the parent directory to Python path so we can import from src
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
-from pulse.database.models import Company
-from pulse.database.session import close_database, get_async_session, init_database
-from pulse.utils.data_normalization import parse_currency_to_float, parse_employee_count
+from src.pulse.database.models import Company
+from src.pulse.database.session import close_database, get_async_session
+from src.pulse.utils.data_normalization import parse_currency_to_float, parse_employee_count
 
 
 async def load_companies_data():
     """Load companies data from CSV file into database"""
+    csv_file = project_root / "top_100_saas_companies_2025.csv"
 
-    csv_file = Path("top_100_saas_companies_2025.csv")
     if not csv_file.exists():
         print(f"❌ CSV file not found: {csv_file}")
         return False
 
+    print(f"📁 Loading companies data from: {csv_file}")
+
     # Initialize database
+    from src.pulse.database.session import init_database
+
     await init_database()
 
     companies_loaded = 0
@@ -37,6 +42,14 @@ async def load_companies_data():
                 reader = csv.DictReader(file)
 
                 for row in reader:
+                    # Split comma-separated values into arrays
+                    top_investors_list = [
+                        inv.strip() for inv in row["Top Investors"].split(",") if inv.strip()
+                    ]
+                    product_list = [
+                        prod.strip() for prod in row["Product"].split(",") if prod.strip()
+                    ]
+
                     # Create company instance with normalized values
                     company = Company(
                         company_name=row["Company Name"],
@@ -47,8 +60,8 @@ async def load_companies_data():
                         arr_usd=parse_currency_to_float(row["ARR"]),
                         valuation_usd=parse_currency_to_float(row["Valuation"]),
                         employee_count=parse_employee_count(row["Employees"]),
-                        top_investors=row["Top Investors"],
-                        product=row["Product"],
+                        top_investors=top_investors_list,
+                        product=product_list,
                         g2_rating=float(row["G2 Rating"]),
                     )
 
@@ -71,11 +84,10 @@ async def load_companies_data():
 
 
 if __name__ == "__main__":
-    print("📊 Loading SaaS companies data into database...")
-    success = asyncio.run(load_companies_data())
-
-    if success:
-        print("🎉 Data loading complete!")
+    print("🚀 Starting companies data loading...")
+    result = asyncio.run(load_companies_data())
+    if result:
+        print("🎉 Data loading completed successfully!")
     else:
         print("💥 Data loading failed!")
         sys.exit(1)

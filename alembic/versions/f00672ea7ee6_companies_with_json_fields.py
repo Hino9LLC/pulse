@@ -1,8 +1,8 @@
-"""companies_only_schema
+"""companies_with_json_fields
 
-Revision ID: 41d7b4e05d76
+Revision ID: f00672ea7ee6
 Revises: 
-Create Date: 2025-09-18 12:36:58.552174
+Create Date: 2025-09-18 13:22:15.805060
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '41d7b4e05d76'
+revision = 'f00672ea7ee6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,8 +29,8 @@ def upgrade() -> None:
     sa.Column('arr_usd', sa.BigInteger(), nullable=False),
     sa.Column('valuation_usd', sa.BigInteger(), nullable=False),
     sa.Column('employee_count', sa.Integer(), nullable=True),
-    sa.Column('top_investors', sa.Text(), nullable=False),
-    sa.Column('product', sa.Text(), nullable=False),
+    sa.Column('top_investors', sa.JSON(), nullable=False),
+    sa.Column('product', sa.JSON(), nullable=False),
     sa.Column('g2_rating', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
