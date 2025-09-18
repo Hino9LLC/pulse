@@ -83,3 +83,13 @@ export const itemsAPI = {
   },
 };
 
+// Visualizations API
+export const visualizationsAPI = {
+  async generateVisualization(prompt: string) {
+    return apiCall("/visualizations/generate", {
+      method: "POST",
+      body: JSON.stringify({ prompt }),
+    });
+  },
+};
+

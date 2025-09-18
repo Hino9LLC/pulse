@@ -35,10 +35,34 @@ d.    [Extreme – data manipulation with reasoning] – Give me the best repres
 - create rest endpoints for the table. we only need read type endpoints
 - have the frontend read the the companies endpoint and display all fields/values in a table in place of items
   
-# Phase 3
-- Add a prompt editbox at the top that call our backend LLM Service
-- Create LLM Service that engineers prompt using the db schema to craft sql / visualization data
-- Build in guardrails to protect against bad sql and bad return data from the llm
-- Pass the sanitized response back to the frontend for rendering
+# Phase 3 - Natural Language Visualization
+- Add a prompt input box at the top of the dashboard that calls backend LLM Service
+- Create LLM Service that:
+  - Uses Anthropic Claude API (key in .env)
+  - Engineers prompts using the companies DB schema to craft SQL queries
+  - Determines appropriate visualization type (chart, table, etc.) based on user request
+  - Returns structured response with SQL + visualization config
+- Build guardrails to protect against:
+  - SQL injection and dangerous queries (only SELECT allowed)
+  - Invalid SQL syntax
+  - Bad return data from LLM
+  - Rate limiting and error handling
+- Frontend should:
+  - Send user prompt to backend LLM service
+  - Receive visualization config and data
+  - Render appropriate chart/table using Chart.js or similar
+  - Handle multiple visualizations on same page
+  - Allow iterative refinement of visualizations
+- Support visualization types:
+  - Pie charts (industry breakdown)
+  - Scatter plots (founded year vs valuation)
+  - Bar charts (top investors, etc.)
+  - Tables (custom data aggregations)
+  - Line charts (trends over time)
+- Example prompts to handle:
+  - "Create a pie chart representing industry breakdown"
+  - "Create a scatter plot of founded year and valuation"
+  - "Show me which investors appear most frequently"
+  - "What's the correlation between ARR and Valuation?"
   
 

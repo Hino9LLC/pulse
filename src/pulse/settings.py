@@ -35,5 +35,23 @@ class Settings(BaseSettings):
     log_level: str = "INFO"  # DEBUG|INFO|WARNING|ERROR
     json_logs: bool = True
 
+    # Anthropic API
+    anthropic_api_key: str = ""
+
+
+class GlobalSettings(BaseSettings):
+    """Global settings that don't use PULSE_ prefix"""
+
+    model_config = SettingsConfigDict(
+        env_file=[".env.local", ".env"],
+        extra="ignore",
+    )
+
+    anthropic_api_key: str = ""
+
 
 settings = Settings()
+global_settings = GlobalSettings()
+
+# Add anthropic key to main settings for convenience
+settings.anthropic_api_key = global_settings.anthropic_api_key

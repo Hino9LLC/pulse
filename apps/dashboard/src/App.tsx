@@ -18,7 +18,9 @@ import {
   FileTextOutlined,
 } from "@ant-design/icons";
 import { ThemeSwitcher } from "./components/ThemeSwitcher";
-import { companiesAPI } from "./utils/api";
+import PromptInput from "./components/PromptInput";
+import VisualizationChart from "./components/VisualizationChart";
+import { companiesAPI, visualizationsAPI } from "./utils/api";
 import "./App.css";
 
 const { Header, Content } = Layout;
@@ -62,6 +64,8 @@ interface Company {
 function App() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [visualizations, setVisualizations] = useState<any[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     fetchCompanies();
@@ -76,6 +80,27 @@ function App() {
       console.error("Failed to fetch companies:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handlePromptSubmit = async (prompt: string) => {
+    try {
+      setIsGenerating(true);
+      const result = await visualizationsAPI.generateVisualization(prompt);
+      setVisualizations(prev => [...prev, { id: Date.now(), prompt, ...result }]);
+    } catch (error) {
+      console.error("Failed to generate visualization:", error);
+      setVisualizations(prev => [...prev, {
+        id: Date.now(),
+        prompt,
+        success: false,
+        error: "Failed to generate visualization",
+        visualization_type: "error",
+        title: "Error",
+        data: []
+      }]);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -186,6 +211,13 @@ function App() {
 
       <Content>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px" }}>
+          {/* Prompt Input */}
+          <PromptInput onSubmit={handlePromptSubmit} loading={isGenerating} />
+
+          {/* Visualizations */}
+          {visualizations.map((viz) => (
+            <VisualizationChart key={viz.id} data={viz} />
+          ))}
 
           {/* Statistics Cards */}
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
@@ -255,15 +287,24 @@ function App() {
 
           {/* Info Alert */}
           <Alert
-            message="SaaS Companies Explorer"
+            message="Natural Language Visualization Platform"
             description={
               <div>
-                This dashboard displays data from the Top 100 SaaS Companies 2025 dataset.
-                The data is served by a FastAPI backend at{" "}
-                <code>http://localhost:8200</code> and includes company metrics like
-                funding, valuation, ARR, and G2 ratings.
+                Built with FastAPI + React + Claude AI for intelligent data visualization.
+                Dataset sourced from{" "}
+                <a
+                  href="https://www.kaggle.com/datasets/shreyasdasari7/top-100-saas-companiesstartups"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#1890ff' }}
+                >
+                  Kaggle: Top 100 SaaS Companies/Startups 2025
+                </a>{" "}
+                by Shreyas Dasari.
                 <br />
-                <strong>Phase 1 & 2 Complete - Ready for natural language visualization features!</strong>
+                <div style={{ textAlign: 'left' }}>
+                  <strong style={{ color: '#d97706' }}>Created by Charles M. Russo</strong>
+                </div>
               </div>
             }
             type="success"

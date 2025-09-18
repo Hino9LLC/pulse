@@ -19,7 +19,9 @@
       "Bash(rm:*)",
       "Bash(uv run:*)",
       "Bash(npm run lint:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(uv add:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []

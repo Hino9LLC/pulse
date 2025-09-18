@@ -14,7 +14,7 @@ from .database.session import close_database, init_database
 from .logging import configure_logging
 from .middleware.request_id import RequestIdMiddleware
 from .middleware.timing import TimingMiddleware
-from .routes import companies, health, items
+from .routes import companies, health, items, visualizations
 from .settings import settings
 
 
@@ -61,6 +61,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api", tags=["health"])
 app.include_router(companies.router, prefix="/api/companies", tags=["companies"])
 app.include_router(items.router, prefix="/api/items", tags=["items"])
+app.include_router(visualizations.router, prefix="/api/visualizations", tags=["visualizations"])
 
 
 @app.get("/")
