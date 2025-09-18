@@ -16,8 +16,8 @@ class CompanyBase(BaseModel):
     arr_usd: int
     valuation_usd: int
     employee_count: int | None
-    top_investors: str
-    product: str
+    top_investors: list[str]
+    product: list[str]
     g2_rating: float
 
 

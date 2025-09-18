@@ -31,8 +31,8 @@ class LLMService:
                 "arr_usd": "BIGINT NOT NULL DEFAULT 0 - Annual Recurring Revenue in USD",
                 "valuation_usd": "BIGINT NOT NULL DEFAULT 0 - Company valuation in USD",
                 "employee_count": "INTEGER - Number of employees",
-                "top_investors": "TEXT NOT NULL - List of top investors",
-                "product": "TEXT NOT NULL - Description of product/service",
+                "top_investors": 'JSON NOT NULL - Array of investor names (e.g., ["Sequoia", "Andreessen Horowitz"])',
+                "product": 'JSON NOT NULL - Array of product names (e.g., ["Azure", "Office 365", "Teams"])',
                 "g2_rating": "FLOAT NOT NULL - G2 rating out of 5",
                 "created_at": "DATETIME NOT NULL",
                 "updated_at": "DATETIME NOT NULL",
@@ -100,10 +100,19 @@ Database Schema - Top 100 SaaS Companies 2025:
 Table: {self.db_schema["table_name"]}
 Columns: {json.dumps(self.db_schema["columns"], indent=2)}
 
-SPECIAL HANDLING FOR INVESTOR ANALYSIS:
-For "which investors appear most frequently", create a bar chart showing investor frequency:
-- Extract individual investor names from the top_investors field
-- Count how many times each investor appears across companies
+JSON FIELD QUERIES:
+The top_investors and product fields are JSON arrays. Use SQLite JSON functions:
+
+For investor frequency analysis:
+- Use json_each() to extract individual investors: json_each(top_investors)
+- Example: SELECT json_each.value as investor, COUNT(*) as count FROM companies, json_each(top_investors) GROUP BY investor
+
+For product analysis:
+- Use json_each() to extract individual products: json_each(product)
+- Example: SELECT json_each.value as product, COUNT(*) as companies FROM companies, json_each(product) GROUP BY product
+
+For filtering by specific investor/product:
+- Use JSON functions: WHERE json_extract(top_investors, '$') LIKE '%Sequoia%'
 - Show only investors that appear multiple times
 - Use bar chart visualization to show investor frequency ranking
 
@@ -138,12 +147,12 @@ REQUIRED EXAMPLES - MUST SUPPORT THESE:
   "chart_config": {{"x_field": "founded_year", "y_field": "valuation_usd"}}
 }}
 
-3. Most frequent investors (bar) - Show investor frequency as a bar chart:
+3. Most frequent investors (bar) - Show investor frequency using JSON functions:
 {{
-  "sql": "SELECT TRIM(investor) as investor_name, COUNT(*) as frequency FROM (SELECT TRIM(SUBSTR(top_investors, 1, INSTR(top_investors || ',', ',') - 1)) as investor FROM companies WHERE top_investors != '' AND top_investors NOT LIKE '%N/A%') GROUP BY investor_name HAVING frequency > 1 ORDER BY frequency DESC LIMIT 15",
+  "sql": "SELECT json_each.value as investor, COUNT(*) as frequency FROM companies, json_each(top_investors) GROUP BY investor HAVING frequency > 1 ORDER BY frequency DESC LIMIT 15",
   "visualization_type": "bar",
   "title": "Most Frequent Investors",
-  "chart_config": {{"x_field": "investor_name", "y_field": "frequency"}}
+  "chart_config": {{"x_field": "investor", "y_field": "frequency"}}
 }}
 
 4. ARR vs Valuation correlation (scatter):
