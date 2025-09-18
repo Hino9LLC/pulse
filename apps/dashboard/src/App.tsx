@@ -10,6 +10,7 @@ import {
   Alert,
   Typography,
   Spin,
+  Button,
 } from "antd";
 import {
   DatabaseOutlined,
@@ -83,19 +84,62 @@ function App() {
     }
   };
 
+  const isModificationRequest = (prompt: string): boolean => {
+    const modificationKeywords = [
+      'make it', 'make the', 'change the', 'change it',
+      'make them', 'turn it', 'turn the', 'color it',
+      'use', 'apply', 'set the', 'update the',
+      'bold', 'italic', 'larger', 'smaller',
+      'blue', 'red', 'green', 'light blue', 'pastel', 'vibrant'
+    ];
+
+    const promptLower = prompt.toLowerCase();
+    return modificationKeywords.some(keyword =>
+      promptLower.includes(keyword) &&
+      !promptLower.includes('create') &&
+      !promptLower.includes('show') &&
+      !promptLower.includes('generate')
+    );
+  };
+
   const handlePromptSubmit = async (prompt: string) => {
     try {
       setIsGenerating(true);
-      setVisualizations([]); // Clear previous visualizations
-      const result = await visualizationsAPI.generateVisualization(prompt);
-      setVisualizations([{ id: Date.now(), prompt, ...result }]);
+
+      // Check if this is a modification request and we have existing visualizations
+      if (isModificationRequest(prompt) && visualizations.length > 0) {
+        // Modify the most recent visualization
+        const mostRecent = visualizations[visualizations.length - 1];
+        const modifyUrl = "/api/visualizations/modify";
+
+        const response = await fetch(`http://localhost:8200${modifyUrl}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: prompt,
+            existing_visualization: mostRecent
+          })
+        });
+
+        const result = await response.json();
+
+        // Replace the most recent visualization
+        setVisualizations(prev => [
+          ...prev.slice(0, -1), // All except the last one
+          { id: mostRecent.id, prompt: `${mostRecent.prompt} → ${prompt}`, ...result }
+        ]);
+      } else {
+        // Create new visualization
+        const result = await visualizationsAPI.generateVisualization(prompt);
+        setVisualizations(prev => [...prev, { id: Date.now(), prompt, ...result }]);
+      }
     } catch (error) {
-      console.error("Failed to generate visualization:", error);
-      setVisualizations([{
+      console.error("Failed to process visualization:", error);
+      setVisualizations(prev => [...prev, {
         id: Date.now(),
         prompt,
         success: false,
-        error: "Failed to generate visualization",
+        error: "Failed to process visualization",
         visualization_type: "error",
         title: "Error",
         data: []
@@ -103,6 +147,14 @@ function App() {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const handleClearAll = () => {
+    setVisualizations([]);
+  };
+
+  const handleRemoveVisualization = (id: number) => {
+    setVisualizations(prev => prev.filter(viz => viz.id !== id));
   };
 
 
@@ -216,9 +268,25 @@ function App() {
           <PromptInput onSubmit={handlePromptSubmit} loading={isGenerating} />
 
           {/* Visualizations */}
-          {visualizations.map((viz) => (
-            <VisualizationChart key={viz.id} data={viz} />
-          ))}
+          {visualizations.length > 0 && (
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <Title level={4} style={{ margin: 0 }}>
+                  Visualizations ({visualizations.length})
+                </Title>
+                <Button onClick={handleClearAll} danger type="text" size="small">
+                  Clear All
+                </Button>
+              </div>
+              {visualizations.map((viz) => (
+                <VisualizationChart
+                  key={viz.id}
+                  data={viz}
+                  onRemove={() => handleRemoveVisualization(viz.id)}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Statistics Cards */}
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>

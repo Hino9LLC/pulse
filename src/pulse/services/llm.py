@@ -31,8 +31,14 @@ class LLMService:
                 "arr_usd": "BIGINT NOT NULL DEFAULT 0 - Annual Recurring Revenue in USD",
                 "valuation_usd": "BIGINT NOT NULL DEFAULT 0 - Company valuation in USD",
                 "employee_count": "INTEGER - Number of employees",
-                "top_investors": 'JSON NOT NULL - Array of investor names (e.g., ["Sequoia", "Andreessen Horowitz"])',
-                "product": 'JSON NOT NULL - Array of product names (e.g., ["Azure", "Office 365", "Teams"])',
+                "top_investors": (
+                    "JSON NOT NULL - Array of investor names "
+                    '(e.g., ["Sequoia", "Andreessen Horowitz"])'
+                ),
+                "product": (
+                    "JSON NOT NULL - Array of product names "
+                    '(e.g., ["Azure", "Office 365", "Teams"])'
+                ),
                 "g2_rating": "FLOAT NOT NULL - G2 rating out of 5",
                 "created_at": "DATETIME NOT NULL",
                 "updated_at": "DATETIME NOT NULL",
@@ -119,12 +125,41 @@ For filtering by specific investor/product:
 VISUALIZATION TYPES: pie, bar, scatter, line
 IMPORTANT: NO table visualizations allowed - use bar charts instead for tabular data
 
+STYLING SUPPORT:
+You can include styling in the chart_config object. Supported styling options:
+- colors: ["#87CEEB", "#FFB6C1"] - Array of hex colors or color names
+- chart_style: "light_blue", "pastel", "vibrant" - Color themes
+- title_style: "bold", "italic", "large", "small" - Title formatting
+- background_color: "#87CEEB" - Background color for scatter/line charts
+- border_color: "#36A2EB" - Border color
+- legend_position: "top", "bottom", "left", "right" - Legend placement
+- font_size: "16px", "large", "small" - Font sizing
+- font_weight: "bold", "normal" - Font weight
+
+COLOR VOCABULARY:
+- Named colors: light_blue, blue, red, green, yellow, purple, orange, pink, gray
+- Hex codes: #87CEEB, #FFB6C1, #36A2EB
+- Color themes: pastel, vibrant, corporate
+
+IMPORTANT COLOR RULES:
+- By DEFAULT: Use multiple different colors for variety (do NOT specify colors or chart_style)
+- ONLY use single colors when user specifically requests a color (e.g. "make it blue", "use light blue")
+- For bar/pie charts: Use varied colors unless specifically told to use one color
+- Leave colors array EMPTY [] for default multi-color behavior
+
 MANDATORY JSON FORMAT - RETURN ONLY VALID JSON WITH NO ADDITIONAL TEXT:
 {{
   "sql": "SELECT ...",
   "visualization_type": "pie|bar|scatter|line",
   "title": "Chart Title",
-  "chart_config": {{"x_field": "column1", "y_field": "column2"}}
+  "chart_config": {{
+    "x_field": "column1",
+    "y_field": "column2",
+    "colors": [],
+    "chart_style": "",
+    "title_style": "",
+    "legend_position": "bottom"
+  }}
 }}
 
 CRITICAL: Return ONLY the JSON object, no explanatory text before or after!
@@ -136,7 +171,7 @@ REQUIRED EXAMPLES - MUST SUPPORT THESE:
   "sql": "SELECT industry, COUNT(*) as company_count FROM companies GROUP BY industry ORDER BY company_count DESC",
   "visualization_type": "pie",
   "title": "Industry Breakdown",
-  "chart_config": {{"x_field": "industry", "y_field": "company_count"}}
+  "chart_config": {{"x_field": "industry", "y_field": "company_count", "colors": [], "chart_style": ""}}
 }}
 
 2. Founded year vs valuation (scatter):
@@ -152,7 +187,7 @@ REQUIRED EXAMPLES - MUST SUPPORT THESE:
   "sql": "SELECT json_each.value as investor, COUNT(*) as frequency FROM companies, json_each(top_investors) GROUP BY investor HAVING frequency > 1 ORDER BY frequency DESC LIMIT 15",
   "visualization_type": "bar",
   "title": "Most Frequent Investors",
-  "chart_config": {{"x_field": "investor", "y_field": "frequency"}}
+  "chart_config": {{"x_field": "investor", "y_field": "frequency", "colors": [], "chart_style": ""}}
 }}
 
 4. ARR vs Valuation correlation (scatter):

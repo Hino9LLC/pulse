@@ -86,8 +86,9 @@ apps/
 **Structured Logging**: Request tracing with IDs, timing middleware, and JSON logging for production readiness.
 
 ### API Design
-- **REST**: `/api/health`, `/api/companies/*`, `/api/visualizations/generate`
+- **REST**: `/api/health`, `/api/companies/*`, `/api/visualizations/*`
 - **Natural Language**: POST `/api/visualizations/generate` - Convert prompts to interactive visualizations
+- **Style Modification**: POST `/api/visualizations/modify` - Modify existing visualizations with natural language
 - **Data Access**: GET `/api/companies/` - Paginated company data with filtering
 - **No Authentication**: Simplified for demonstration and rapid experimentation
 - **Pagination**: Standard `skip`/`limit` parameters for data endpoints
@@ -123,3 +124,36 @@ This scaffolding represents **modern AI-powered data visualization** built with 
 **AI-Powered Flow**: User prompt → LLM processing → SQL generation → Data visualization → Interactive chart rendering.
 
 **Security**: Comprehensive SQL injection prevention with query validation, keyword filtering, and SELECT-only restrictions.
+
+## Visualization Features
+
+### Multiple Visualizations Dashboard
+Users can create multiple visualizations to build comprehensive dashboards:
+- **Additive Creation**: Each new prompt adds another visualization to the dashboard
+- **Dashboard Management**: Clear all visualizations or remove individual charts
+- **Persistent State**: Visualizations remain available throughout the session
+
+### Natural Language Style Modification
+Modify existing visualizations using conversational prompts:
+- **Color Changes**: "Make it blue", "Change the color to light blue", "Use pastel colors"
+- **Chart Styling**: "Make the title bold", "Use vibrant colors", "Apply corporate theme"
+- **Smart Detection**: System automatically detects modification vs. new chart requests
+- **Chart Replacement**: Style modifications replace the most recent chart (no duplication)
+
+### Default Styling Behavior
+- **Multi-Colored Default**: Charts use varied colors automatically for visual appeal
+- **Specific Override**: Single colors only applied when explicitly requested
+- **Color Themes**: Support for pastel, vibrant, and corporate color schemes
+- **Professional Styling**: Chart.js integration with Ant Design components
+
+### Supported Visualization Types
+- **Pie Charts**: Industry breakdowns, market share analysis
+- **Bar Charts**: Top performers, frequency analysis, comparisons
+- **Scatter Plots**: Correlation analysis, trend identification
+- **Line Charts**: Time series, progression tracking
+- **Data Tables**: Detailed data exploration (fallback option)
+
+### Example Prompts
+**Creation**: "Show me industry breakdown", "Plot ARR vs valuation", "Which investors appear most frequently?"
+
+**Modification**: "Make the pie chart blue", "Use bold title", "Apply pastel theme", "Change legend position"

@@ -6,11 +6,11 @@ Generic SQLAlchemy models designed for SQLite with PostgreSQL migration path
 import uuid
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, Float, Integer, String, Text
+from sqlalchemy import BigInteger, DateTime, Float, Integer, String
 from sqlalchemy.dialects.sqlite import INTEGER
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.types import JSON
 from sqlalchemy.sql import func
+from sqlalchemy.types import JSON
 
 
 class Base(DeclarativeBase):
