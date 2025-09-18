@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/chuck/Desktop/src/vibes/**)",
+      "Bash(npx create-react-app:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(make:*)",
+      "Bash(uv sync:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run lint)",
+      "Bash(uv run ruff:*)",
+      "WebFetch(domain:ant.design)",
+      "Bash(curl:*)",
+      "Bash(npm test:*)",
+      "Bash(grep:*)",
+      "Bash(mv:*)",
+      "Bash(python:*)",
+      "Bash(rm:*)",
+      "Bash(uv run:*)",
+      "Bash(npm run lint:*)",
+      "Bash(sqlite3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
